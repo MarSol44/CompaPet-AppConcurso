@@ -1,0 +1,2526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompaPet - Red Social de Mascotas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #F4A460 100%);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(139, 69, 19, 0.1);
+        }
+        
+        .animate-bounce-slow {
+            animation: bounce 2s infinite;
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .chat-bubble {
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        
+        .toggle-switch {
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background-color: #8B4513;
+            color: white;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-ring {
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.33); }
+            80%, 100% { opacity: 0; }
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            z-index: 40;
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
+        }
+        
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-dot.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        
+        .security-badge {
+            background: linear-gradient(45deg, #10B981, #059669);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .captcha-box {
+            border: 2px dashed #D1D5DB;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .captcha-box:hover {
+            border-color: #F59E0B;
+            background-color: #FEF3C7;
+        }
+        
+        .captcha-box.verified {
+            border-color: #10B981;
+            background-color: #D1FAE5;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #F59E0B;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .role-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.2);
+        }
+        
+        .role-card.selected {
+            border-color: #F59E0B;
+            background-color: #FEF3C7;
+        }
+    </style>
+</head>
+<body class="bg-orange-50 min-h-screen">
+    <!-- App Container -->
+    <div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative overflow-hidden">
+        
+        <!-- Onboarding Slides -->
+        <div id="onboarding" class="screen active h-screen gradient-bg relative">
+            <!-- Slide 1 -->
+            <div id="slide1" class="slide active h-full flex flex-col justify-center items-center text-white p-8">
+                <div class="text-center mb-8">
+                    <div class="text-8xl mb-6 animate-bounce-slow">🐾</div>
+                    <h1 class="text-4xl font-bold mb-4">CompaPet</h1>
+                    <p class="text-xl opacity-90 mb-8">Conecta con paseadores de confianza</p>
+                    
+                    <div class="bg-white bg-opacity-20 rounded-2xl p-6 mb-8">
+                        <div class="flex justify-center space-x-4">
+                            <div class="text-4xl animate-bounce" style="animation-delay: 0s;">🐕</div>
+                            <div class="text-4xl animate-bounce" style="animation-delay: 0.2s;">❤️</div>
+                            <div class="text-4xl animate-bounce" style="animation-delay: 0.4s;">👨‍🦲</div>
+                        </div>
+                        <p class="text-sm mt-4 opacity-80">Mascotas felices, dueños tranquilos</p>
+                    </div>
+
+                    <button onclick="skipOnboarding()" class="absolute top-4 right-4 text-white text-sm opacity-80 hover:opacity-100">
+            Saltar →
+        </button>
+
+                </div>
+                
+                <div class="progress-dots mb-8">
+                    <div class="progress-dot active mr-2"></div>
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot"></div>
+                </div>
+                
+                <button onclick="nextSlide()" class="bg-white text-amber-800 px-8 py-3 rounded-full font-semibold hover:bg-orange-50 transition-colors">
+                    Siguiente
+                </button>
+            </div>
+
+            <!-- Slide 2 -->
+            <div id="slide2" class="slide h-full flex flex-col justify-center items-center text-white p-8" style="display: none;">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-6">🚶‍♂️</div>
+                    <h2 class="text-3xl font-bold mb-4">Paseadores en acción</h2>
+                    <p class="text-lg opacity-90 mb-8">Profesionales verificados cuidando a tu mascota</p>
+                    
+                    <div class="bg-white bg-opacity-20 rounded-2xl p-6 mb-8">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center">
+                                <div class="text-3xl mb-2">🏃‍♂️</div>
+                                <div class="text-sm">Ejercicio diario</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl mb-2">📸</div>
+                                <div class="text-sm">Fotos en vivo</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl mb-2">🎾</div>
+                                <div class="text-sm">Juegos y diversión</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl mb-2">🏠</div>
+                                <div class="text-sm">Cuidado en casa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="progress-dots mb-8">
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot active mr-2"></div>
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot"></div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="prevSlide()" class="border-2 border-white text-white px-6 py-3 rounded-full font-medium hover:bg-white hover:text-amber-800 transition-colors">
+                        Anterior
+                    </button>
+                    <button onclick="nextSlide()" class="bg-white text-amber-800 px-8 py-3 rounded-full font-semibold hover:bg-orange-50 transition-colors">
+                        Siguiente
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div id="slide3" class="slide h-full flex flex-col justify-center items-center text-white p-8" style="display: none;">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-6">🛡️</div>
+                    <h2 class="text-3xl font-bold mb-4">Seguridad garantizada</h2>
+                    <p class="text-lg opacity-90 mb-8">Verificación completa y seguimiento en tiempo real</p>
+                    
+                    <div class="bg-white bg-opacity-20 rounded-2xl p-6 mb-8">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-center space-x-3">
+                                <div class="security-badge">✓ VERIFICADO</div>
+                                <span class="text-sm">Paseadores certificados</span>
+                            </div>
+                            <div class="flex items-center justify-center space-x-3">
+                                <div class="security-badge">📍 GPS</div>
+                                <span class="text-sm">Seguimiento en vivo</span>
+                            </div>
+                            <div class="flex items-center justify-center space-x-3">
+                                <div class="security-badge">🔒 SEGURO</div>
+                                <span class="text-sm">Datos protegidos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="progress-dots mb-8">
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot active mr-2"></div>
+                    <div class="progress-dot"></div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="prevSlide()" class="border-2 border-white text-white px-6 py-3 rounded-full font-medium hover:bg-white hover:text-amber-800 transition-colors">
+                        Anterior
+                    </button>
+                    <button onclick="nextSlide()" class="bg-white text-amber-800 px-8 py-3 rounded-full font-semibold hover:bg-orange-50 transition-colors">
+                        Siguiente
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 4 - Access -->
+            <div id="slide4" class="slide h-full flex flex-col justify-center items-center text-white p-8" style="display: none;">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-6">🚀</div>
+                    <h2 class="text-3xl font-bold mb-4">¡Comencemos!</h2>
+                    <p class="text-lg opacity-90 mb-8">Únete a miles de dueños y paseadores felices</p>
+                </div>
+                
+                <div class="progress-dots mb-8">
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot mr-2"></div>
+                    <div class="progress-dot active"></div>
+                </div>
+                
+                <div class="w-full space-y-4">
+                    <button onclick="showLogin()" class="w-full bg-white text-amber-800 py-4 rounded-xl font-semibold text-lg hover:bg-orange-50 transition-colors">
+                        Iniciar Sesión
+                    </button>
+                    <button onclick="showRegister()" class="w-full border-2 border-white text-white py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-amber-800 transition-colors">
+                        Registrarse
+                    </button>
+                    <button onclick="continueAsGuest()" class="w-full text-white opacity-70 hover:opacity-100 transition-opacity py-2">
+                        Continuar como invitado
+                    </button>
+                </div>
+                
+                <button onclick="prevSlide()" class="mt-6 text-white opacity-70 hover:opacity-100 transition-opacity">
+                    ← Anterior
+                </button>
+            </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="login" class="screen h-screen p-6 flex flex-col justify-center">
+            <div class="text-center mb-8">
+                <div class="text-4xl mb-4">🐾</div>
+                <h2 class="text-2xl font-bold text-amber-800 mb-2">Bienvenido de vuelta</h2>
+                <p class="text-gray-600">Inicia sesión de forma segura</p>
+                <div class="security-badge mt-2">🔒 CONEXIÓN SEGURA</div>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Correo electrónico</label>
+                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="tu@email.com" required>
+                    <div id="emailError" class="text-red-500 text-sm mt-1 hidden">Formato de correo inválido</div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+                    <div class="relative">
+                        <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="••••••••" required>
+                        <button type="button" onclick="togglePassword('loginPassword')" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                            👁️
+                        </button>
+                    </div>
+                    <div id="passwordError" class="text-red-500 text-sm mt-1 hidden">Contraseña incorrecta</div>
+                </div>
+                
+                <!-- Captcha -->
+                <div id="loginCaptcha" class="captcha-box" onclick="solveCaptcha('login')">
+                    <div class="text-2xl mb-2">🤖</div>
+                    <p class="text-sm text-gray-600">Haz clic para verificar que no eres un robot</p>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="rememberMe" class="rounded border-gray-300 text-amber-600 focus:ring-amber-500">
+                        <span class="ml-2 text-sm text-gray-600">Recordarme (token seguro)</span>
+                    </label>
+                    <button type="button" onclick="showForgotPassword()" class="text-sm text-amber-600 hover:text-amber-800">¿Olvidaste tu contraseña?</button>
+                </div>
+                
+                <button type="submit" id="loginSubmit" class="w-full bg-amber-600 text-white py-3 rounded-xl font-semibold hover:bg-amber-700 transition-colors disabled:opacity-50" disabled>
+                    Iniciar Sesión Segura
+                </button>
+                
+                <div class="text-center">
+                    <p class="text-gray-600 mb-4">O continúa con</p>
+                    <div class="flex space-x-4">
+                        <button type="button" onclick="socialLogin('google')" class="flex-1 bg-red-500 text-white py-3 rounded-xl font-medium hover:bg-red-600 transition-colors flex items-center justify-center">
+                            <span class="mr-2">🔍</span> Google
+                        </button>
+                        <button type="button" onclick="socialLogin('apple')" class="flex-1 bg-black text-white py-3 rounded-xl font-medium hover:bg-gray-800 transition-colors flex items-center justify-center">
+                            <span class="mr-2">🍎</span> Apple
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button type="button" onclick="showOnboarding()" class="text-amber-600 hover:text-amber-800">← Volver</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Forgot Password Screen -->
+        <div id="forgotPassword" class="screen h-screen p-6 flex flex-col justify-center">
+            <div class="text-center mb-8">
+                <div class="text-4xl mb-4">🔑</div>
+                <h2 class="text-2xl font-bold text-amber-800 mb-2">Recuperar contraseña</h2>
+                <p class="text-gray-600">Te enviaremos un enlace seguro a tu correo</p>
+                <div class="security-badge mt-2">🔒 ENLACE DE UN SOLO USO</div>
+            </div>
+            
+            <form id="forgotForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Correo electrónico</label>
+                    <input type="email" id="forgotEmail" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="tu@email.com" required>
+                </div>
+                
+                <div id="forgotCaptcha" class="captcha-box" onclick="solveCaptcha('forgot')">
+                    <div class="text-2xl mb-2">🤖</div>
+                    <p class="text-sm text-gray-600">Verificación anti-spam</p>
+                </div>
+                
+                <button type="submit" id="forgotSubmit" class="w-full bg-amber-600 text-white py-3 rounded-xl font-semibold hover:bg-amber-700 transition-colors disabled:opacity-50" disabled>
+                    Enviar enlace de recuperación
+                </button>
+                
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <p class="text-sm text-amber-800">
+                        <strong>🔒 Seguridad:</strong> El enlace expirará en 15 minutos por tu protección
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <button type="button" onclick="showLogin()" class="text-amber-600 hover:text-amber-800">← Volver al login</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Register Screen -->
+        <div id="register" class="screen p-6 overflow-y-auto">
+            <div class="text-center mb-6">
+                <div class="text-4xl mb-4">🐾</div>
+                <h2 class="text-2xl font-bold text-amber-800 mb-2">Crear cuenta</h2>
+                <p class="text-gray-600">Únete a la comunidad CompaPet</p>
+                <div class="security-badge mt-2">🔒 REGISTRO SEGURO</div>
+            </div>
+            
+            <form id="registerForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre completo</label>
+                    <input type="text" id="fullName" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Tu nombre completo" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Edad (opcional)</label>
+                    <input type="number" id="age" min="16" max="100" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Edad">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Correo electrónico</label>
+                    <input type="email" id="registerEmail" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="tu@email.com" required>
+                    <div class="text-xs text-gray-500 mt-1">Se enviará confirmación por correo</div>
+                    <div id="registerEmailError" class="text-red-500 text-sm mt-1 hidden">Formato de correo inválido</div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña segura</label>
+                    <div class="relative">
+                        <input type="password" id="registerPassword" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Mínimo 8 caracteres" required>
+                        <button type="button" onclick="togglePassword('registerPassword')" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                            👁️
+                        </button>
+                    </div>
+                    <div id="passwordStrength" class="mt-2">
+                        <div class="flex space-x-1 mb-1">
+                            <div class="password-strength flex-1 bg-gray-200 rounded" id="strength1"></div>
+                            <div class="password-strength flex-1 bg-gray-200 rounded" id="strength2"></div>
+                            <div class="password-strength flex-1 bg-gray-200 rounded" id="strength3"></div>
+                            <div class="password-strength flex-1 bg-gray-200 rounded" id="strength4"></div>
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            <div id="strengthText">Fortaleza de contraseña</div>
+                            <div class="mt-1 space-y-1">
+                                <div id="req1" class="text-red-500">✗ Mínimo 8 caracteres</div>
+                                <div id="req2" class="text-red-500">✗ Una mayúscula</div>
+                                <div id="req3" class="text-red-500">✗ Una minúscula</div>
+                                <div id="req4" class="text-red-500">✗ Un número</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Foto de perfil (opcional)</label>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-gray-400">
+                            📷
+                        </div>
+                        <button type="button" onclick="selectProfilePhoto()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                            Seleccionar foto
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="registerCaptcha" class="captcha-box" onclick="solveCaptcha('register')">
+                    <div class="text-2xl mb-2">🤖</div>
+                    <p class="text-sm text-gray-600">Verificación anti-spam requerida</p>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="terms" required class="rounded border-gray-300 text-amber-600 focus:ring-amber-500">
+                    <label for="terms" class="text-sm text-gray-600">
+                        Acepto los <button type="button" onclick="showTerms()" class="text-amber-600 hover:underline">términos y condiciones</button> y <button type="button" onclick="showPrivacy()" class="text-amber-600 hover:underline">política de privacidad</button>
+                    </label>
+                </div>
+                
+                <button type="submit" id="registerSubmit" class="w-full bg-amber-600 text-white py-3 rounded-xl font-semibold hover:bg-amber-700 transition-colors disabled:opacity-50" disabled>
+                    Crear Cuenta Básica
+                </button>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <p class="text-sm text-blue-800">
+                        <strong>ℹ️ Cuenta básica:</strong> Podrás navegar y ver perfiles. Para contactar paseadores necesitarás completar tu perfil.
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <button type="button" onclick="showOnboarding()" class="text-amber-600 hover:text-amber-800">← Volver</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Email Confirmation Screen -->
+        <div id="emailConfirmation" class="screen h-screen p-6 flex flex-col justify-center">
+            <div class="text-center">
+                <div class="text-6xl mb-6">📧</div>
+                <h2 class="text-2xl font-bold text-amber-800 mb-4">¡Confirma tu correo!</h2>
+                <p class="text-gray-600 mb-6">Hemos enviado un enlace de confirmación a <strong id="confirmEmail">tu@email.com</strong></p>
+                
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                    <p class="text-sm text-amber-800">
+                        <strong>🔒 Seguridad:</strong> El enlace expira en 24 horas por tu protección
+                    </p>
+                </div>
+                
+                <div class="space-y-4">
+                    <button onclick="checkEmailConfirmation()" class="w-full bg-amber-600 text-white py-3 rounded-xl font-semibold hover:bg-amber-700 transition-colors">
+                        Ya confirmé mi correo
+                    </button>
+                    <button onclick="resendConfirmation()" class="w-full border border-amber-600 text-amber-600 py-3 rounded-xl font-medium hover:bg-amber-50 transition-colors">
+                        Reenviar correo
+                    </button>
+                    <button onclick="continueAsGuest()" class="w-full text-gray-600 hover:text-gray-800 py-2">
+                        Continuar como invitado por ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Role Selection Screen -->
+        <div id="roleSelection" class="screen h-screen p-6 flex flex-col justify-center">
+            <div class="text-center mb-8">
+                <div class="text-4xl mb-4">🎯</div>
+                <h2 class="text-2xl font-bold text-amber-800 mb-2">¿Cómo quieres usar CompaPet?</h2>
+                <p class="text-gray-600">Puedes cambiar esto después</p>
+            </div>
+            
+            <div class="space-y-4 mb-8">
+                <div onclick="selectInitialRole('owner')" class="role-card bg-white border-2 border-gray-200 rounded-xl p-6 text-center">
+                    <div class="text-4xl mb-3">🐕</div>
+                    <h3 class="text-lg font-semibold mb-2">Soy Dueño</h3>
+                    <p class="text-sm text-gray-600">Busco paseadores y cuidadores para mi mascota</p>
+                </div>
+                
+                <div onclick="selectInitialRole('walker')" class="role-card bg-white border-2 border-gray-200 rounded-xl p-6 text-center">
+                    <div class="text-4xl mb-3">👨‍🦲</div>
+                    <h3 class="text-lg font-semibold mb-2">Soy Paseador/Cuidador</h3>
+                    <p class="text-sm text-gray-600">Ofrezco servicios de paseo y cuidado</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button onclick="showMainApp()" class="text-gray-600 hover:text-gray-800">
+                    Explorar sin elegir por ahora
+                </button>
+            </div>
+        </div>
+
+        <!-- Complete Profile Modal -->
+        <div id="completeProfileModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl p-6 w-full max-w-sm max-h-[90vh] overflow-y-auto">
+                <div class="text-center mb-4">
+                    <div class="text-4xl mb-2">📝</div>
+                    <h3 class="text-lg font-semibold">Completa tu perfil</h3>
+                    <p class="text-sm text-gray-600">Para contactar necesitas completar algunos datos</p>
+                </div>
+                
+                <div id="ownerProfileForm" class="hidden">
+                    <h4 class="font-semibold mb-3 flex items-center">
+                        <span class="mr-2">🐕</span> Registra tu mascota
+                    </h4>
+                    <div class="space-y-3">
+                        <input type="text" placeholder="Nombre de la mascota" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option>🐕 Perro</option>
+                            <option>🐱 Gato</option>
+                            <option>🐰 Conejo</option>
+                            <option>🐦 Ave</option>
+                            <option>🐹 Otro</option>
+                        </select>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" placeholder="Edad (años)" class="px-3 py-2 border border-gray-300 rounded-lg">
+                            <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                <option>♂️ Macho</option>
+                                <option>♀️ Hembra</option>
+                            </select>
+                        </div>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option>Pequeño (hasta 10kg)</option>
+                            <option>Mediano (10-25kg)</option>
+                            <option>Grande (25kg+)</option>
+                        </select>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2"> Vacunas al día
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2"> Esterilizado/castrado
+                            </label>
+                        </div>
+                        <textarea placeholder="Notas especiales (personalidad, cuidados...)" class="w-full px-3 py-2 border border-gray-300 rounded-lg h-16"></textarea>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Datos de contacto</h5>
+                        <input type="tel" placeholder="Teléfono" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <div class="grid grid-cols-2 gap-2">
+                            <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                <option>Lima</option>
+                                <option>Arequipa</option>
+                                <option>Cusco</option>
+                                <option>Trujillo</option>
+                            </select>
+                            <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                <option>Miraflores</option>
+                                <option>San Isidro</option>
+                                <option>Surco</option>
+                                <option>Barranco</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="walkerProfileForm" class="hidden">
+                    <h4 class="font-semibold mb-3 flex items-center">
+                        <span class="mr-2">👨‍🦲</span> Perfil profesional
+                    </h4>
+                    <div class="space-y-3">
+                        <textarea placeholder="Breve presentación (experiencia, por qué amas las mascotas...)" class="w-full px-3 py-2 border border-gray-300 rounded-lg h-20"></textarea>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Especialidades</label>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2"> 🐕 Perros pequeños
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2"> 🐕‍🦺 Perros grandes
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2"> 🐱 Gatos
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2"> 🐰 Mascotas exóticas
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2"> 🎾 Entretenimiento
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2"> 🏥 Cuidados médicos
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" placeholder="Precio paseo/hora (S/)" class="px-3 py-2 border border-gray-300 rounded-lg">
+                            <input type="number" placeholder="Precio cuidado/día (S/)" class="px-3 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Disponibilidad</label>
+                            <div class="grid grid-cols-3 gap-2 text-sm">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-1"> Mañanas
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-1"> Tardes
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-1"> Noches
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Datos de contacto</h5>
+                        <input type="tel" placeholder="Teléfono" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="text" placeholder="Instagram (opcional)" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+                
+                <div class="flex space-x-2 mt-6">
+                    <button onclick="saveProfile()" class="flex-1 bg-amber-600 text-white py-2 rounded-lg font-medium hover:bg-amber-700 transition-colors">
+                        Guardar
+                    </button>
+                    <button onclick="closeCompleteProfile()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors">
+                        Después
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Screen -->
+        <div id="mainApp" class="screen">
+            <!-- Header -->
+            <div class="bg-white shadow-sm p-4 sticky top-0 z-30">
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-2xl font-bold text-amber-800">CompaPet</h1>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="showSearch()" class="p-2 rounded-full bg-orange-100 text-orange-600 hover:bg-orange-200 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button onclick="showNotifications()" class="p-2 rounded-full bg-orange-100 text-orange-600 hover:bg-orange-200 transition-colors relative">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+                            </svg>
+                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</div>
+                        </button>
+                        <button onclick="showTab('profile')" class="p-2 rounded-full bg-orange-100 text-orange-600 hover:bg-orange-200 transition-colors">
+                            <div class="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                                <span id="userInitials">AC</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Role Selection Buttons -->
+                <div class="flex space-x-2 mb-4">
+                    <button onclick="switchRole('owner')" id="ownerToggle" class="px-4 py-2 rounded-lg font-medium transition-colors toggle-switch active bg-blue-500 text-white flex items-center">
+                        <span class="mr-2">🐕</span> Soy Dueño
+                    </button>
+                    <button onclick="switchRole('walker')" id="walkerToggle" class="px-4 py-2 rounded-lg font-medium transition-colors toggle-switch bg-green-200 text-green-800 flex items-center">
+                        <span class="mr-2">🚶‍♂️</span> Soy Paseador
+                    </button>
+                    <button onclick="switchRole('all')" id="allToggle" class="px-4 py-2 rounded-lg font-medium transition-colors toggle-switch bg-purple-200 text-purple-800 flex items-center">
+                        <span class="mr-2">👥</span> TODOS
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Express Button -->
+            <button onclick="showExpressSearch()" class="floating-btn bg-orange-500 text-white p-4 rounded-full shadow-lg hover:bg-orange-600 transition-colors">
+                <div class="text-center">
+                    <div class="text-xl">⚡</div>
+                    <div class="text-xs font-bold">EXPRESS</div>
+                </div>
+            </button>
+            <!-- Express Search Modal -->
+        <div id="expressModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6">
+                <div class="text-center mb-6">
+                    <div class="text-4xl mb-3">⚡</div>
+                    <h3 class="text-xl font-bold">Búsqueda Express</h3>
+                    <p class="text-gray-600">Encuentra ayuda inmediata</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="startExpressSearch('Paseo')" class="p-4 border-2 border-gray-300 rounded-xl text-center hover:border-purple-500 hover:bg-purple-50 transition-colors">
+                            <div class="text-2xl mb-2">🚶‍♂️</div>
+                            <div class="font-semibold">Paseo</div>
+                        </button>
+                        <button onclick="startExpressSearch('Cuidado')" class="p-4 border-2 border-gray-300 rounded-xl text-center hover:border-purple-500 hover:bg-purple-50 transition-colors">
+                            <div class="text-2xl mb-2">🏠</div>
+                            <div class="font-semibold">Cuidado</div>
+                        </button>
+                    </div>
+                    
+                    <button onclick="closeExpressModal()" class="w-full py-3 text-gray-600 font-semibold">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Express Match Modal -->
+        <div id="matchModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 text-center">
+                <div class="text-4xl mb-4">🎯</div>
+                <h3 class="text-xl font-bold mb-2">¡Match encontrado!</h3>
+                <p class="text-gray-600 mb-6">Encontramos a alguien disponible cerca de ti</p>
+                
+                <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-3">C</div>
+                    <h4 class="font-bold">Carlos Mendoza</h4>
+                    <p class="text-sm text-gray-600">⭐ 4.9 • A 5 min de distancia</p>
+                    <p class="text-sm text-purple-600 font-semibold">Llegará en 8 minutos</p>
+                </div>
+                
+                <div class="space-y-3">
+                    <button onclick="acceptMatch()" class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors">
+                        ✅ Aceptar
+                    </button>
+                    <button onclick="rejectMatch()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors">
+                        ❌ Buscar otro
+                    </button>
+                </div>
+            </div>
+        </div>
+
+            <!-- Content Area -->
+            <div id="contentArea" class="pb-20">
+                <!-- Publications/Feed Tab -->
+                <div id="feedTab" class="tab-content active">
+                    <!-- Filter Bar -->
+                    <div class="p-4 bg-gray-50 border-b">
+                        <div class="flex space-x-2 overflow-x-auto">
+                            <button onclick="filterFeed('all')" class="filter-btn active px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 border-amber-600 text-amber-600">
+                                Todos
+                            </button>
+                            <button onclick="filterFeed('walkers')" class="filter-btn px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-600 hover:text-amber-600">
+                                Paseadores
+                            </button>
+                            <button onclick="filterFeed('caregivers')" class="filter-btn px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-600 hover:text-amber-600">
+                                Cuidadores
+                            </button>
+                            <button onclick="filterFeed('nearby')" class="filter-btn px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-600 hover:text-amber-600">
+                                Cerca
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Feed -->
+                    <div class="p-4 space-y-4">
+                        <!-- Post 1 - Walker -->
+                        <div class="bg-white rounded-xl card-shadow p-4 border border-gray-100 post-card" data-role="walker">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold relative">
+                                    MG
+                                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <h3 class="font-semibold">María González</h3>
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Paseadora</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                        <span>Especialista en perros grandes • San Isidro</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        <span class="text-blue-600 text-sm font-semibold">S/. 25/hora</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-800 mb-3">5 años de experiencia cuidando mascotas. Disponible mañanas y tardes.</p>
+                            
+                            <div class="flex justify-end">
+                                <button onclick="requestService('María González')" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                                    Ver Detalle
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Post 2 - Caregiver -->
+                        <div class="bg-white rounded-xl card-shadow p-4 border border-gray-100 post-card" data-role="caregiver">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold relative">
+                                    CR
+                                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <h3 class="font-semibold">Carlos Ruiz</h3>
+                                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full font-medium">Cuidador</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                        <span>Cuidado a domicilio • Miraflores</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        <span class="text-blue-600 text-sm font-semibold">S/. 80/día</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-800 mb-3">Cuidado 24/7 en tu hogar. Certificado en primeros auxilios para mascotas.</p>
+                            
+                            <div class="flex justify-end">
+                                <button onclick="requestService('Carlos Ruiz')" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                                    Ver Detalle
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Post 3 - Owner looking for service -->
+                        <div class="bg-white rounded-xl card-shadow p-4 border border-gray-100 border-l-4 border-l-purple-500 post-card" data-role="owner">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                    LC
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <h3 class="font-semibold">Luis Castro</h3>
+                                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full font-medium">Busca paseador</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                        <span>📍 Barranco • Urgente</span>
+                                        <span>•</span>
+                                        <span>Hasta S/ 35/hora</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-800 mb-3">🆘 Necesito paseador para Rocky (Golden Retriever) mañana 8am. Soy nuevo en el barrio y Rocky necesita ejercicio. ¡Pago bien!</p>
+                            
+                            <div class="bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg p-3 mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="text-2xl">🐕</div>
+                                    <div>
+                                        <h4 class="font-medium">Rocky</h4>
+                                        <p class="text-sm text-gray-600">Golden Retriever • 2 años • Grande</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="walker-only hidden flex space-x-2">
+                                <button onclick="offerService('Luis Castro')" class="flex-1 bg-purple-600 text-white py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors">
+                                    🙋‍♂️ Me ofrezco
+                                </button>
+                                <button onclick="sharePost('Luis Castro')" class="px-4 bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                                    📤
+                                </button>
+                            </div>
+                            <!-- Dentro del post de Luis Castro -->
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role/Chat Tab -->
+                <div id="chatTab" class="tab-content">
+                    <!-- Chat Section -->
+                    <div class="p-4 border-b bg-white">
+                        <div class="flex items-center justify-between mb-3">
+                            <h2 class="text-lg font-semibold text-gray-800">Chat</h2>
+                            <button onclick="newChat()" class="text-amber-600 hover:text-amber-800">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Role Toggle -->
+                        <div class="mb-4">
+                            <div class="flex bg-white rounded-xl p-1 shadow-sm">
+                                <button onclick="switchChatRole('owner')" id="chatOwnerToggle" class="flex-1 py-3 rounded-lg font-medium transition-colors toggle-switch active flex items-center justify-center bg-blue-500 text-white">
+                                    <span class="mr-2">🐕</span> Dueños
+                                </button>
+                                <button onclick="switchChatRole('walker')" id="chatWalkerToggle" class="flex-1 py-3 rounded-lg font-medium transition-colors toggle-switch flex items-center justify-center bg-green-200 text-green-800">
+                                    <span class="mr-2">🚶‍♂️</span> Paseadores
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Content -->
+                        <div id="chatContent">
+                            <!-- Owner Chat Content -->
+                            <div id="ownerChatContent" class="space-y-3">
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                    <h4 class="font-medium text-blue-800 mb-2">Paseadores interesados en pasear a tu mascota</h4>
+                                    <div class="space-y-2">
+                                        <div onclick="openChat('María González')" class="flex items-center space-x-3 p-2 bg-white rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                                MG
+                                            </div>
+                                            <div class="flex-1">
+                                                <h5 class="font-medium text-sm">María González</h5>
+                                                <p class="text-xs text-gray-600">Especialista en perros grandes • San Isidro</p>
+                                            </div>
+                                            <div class="text-xs text-green-600 font-medium">S/. 25/hora</div>
+                                        </div>
+                                        <div onclick="openChat('Carlos Ruiz')" class="flex items-center space-x-3 p-2 bg-white rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                                CR
+                                            </div>
+                                            <div class="flex-1">
+                                                <h5 class="font-medium text-sm">Carlos Ruiz</h5>
+                                                <p class="text-xs text-gray-600">Cuidado a domicilio • Miraflores</p>
+                                            </div>
+                                            <div class="text-xs text-green-600 font-medium">S/. 80/día</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Walker Chat Content -->
+                            <div id="walkerChatContent" class="space-y-3 hidden">
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                                    <h4 class="font-medium text-green-800 mb-2">Dueños interesados en que les pases a sus perritos</h4>
+                                    <div class="space-y-2">
+                                        <div onclick="openChat('Luis Castro')" class="flex items-center space-x-3 p-2 bg-white rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                                LC
+                                            </div>
+                                            <div class="flex-1">
+                                                <h5 class="font-medium text-sm">Luis Castro</h5>
+                                                <p class="text-xs text-gray-600">Busca paseador para Rocky • Barranco</p>
+                                            </div>
+                                            <div class="text-xs text-green-600 font-medium">Hasta S/ 35/hora</div>
+                                        </div>
+                                        <div onclick="openChat('Ana Rodríguez')" class="flex items-center space-x-3 p-2 bg-white rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                            <div class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                                AR
+                                            </div>
+                                            <div class="flex-1">
+                                                <h5 class="font-medium text-sm">Ana Rodríguez</h5>
+                                                <p class="text-xs text-gray-600">Necesita cuidado para gatos • San Isidro</p>
+                                            </div>
+                                            <div class="text-xs text-green-600 font-medium">S/ 60/día</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorites Tab -->
+                <div id="favoritesTab" class="tab-content p-4">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Favoritos e Historial</h2>
+                    
+                    <div class="space-y-4">
+                        <!-- Favorite Walkers -->
+                        <div class="bg-white rounded-xl card-shadow p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-semibold flex items-center">
+                                    <span class="mr-2">⭐</span> Paseadores Favoritos
+                                </h3>
+                                <span class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">3</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                        JC
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium">Juan Carlos</h4>
+                                        <div class="flex items-center space-x-2 text-xs text-gray-600">
+                                            <span>⭐ 4.9</span>
+                                            <span>•</span>
+                                            <span>Última vez: 15 Nov</span>
+                                        </div>
+                                    </div>
+                                    <button onclick="quickHire('Juan Carlos')" class="bg-amber-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-amber-700 transition-colors">
+                                        Contratar
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <div class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                        MR
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium">María Rosa</h4>
+                                        <div class="flex items-center space-x-2 text-xs text-gray-600">
+                                            <span>⭐ 5.0</span>
+                                            <span>•</span>
+                                            <span>Última vez: 8 Nov</span>
+                                        </div>
+                                    </div>
+                                    <button onclick="quickHire('María Rosa')" class="bg-amber-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-amber-700 transition-colors">
+                                        Contratar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service History -->
+                        <div class="bg-white rounded-xl card-shadow p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-semibold flex items-center">
+                                    <span class="mr-2">📋</span> Historial de Servicios
+                                </h3>
+                                <button onclick="viewFullHistory()" class="text-amber-600 hover:text-amber-800 text-sm">Ver todo</button>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <div>
+                                            <span class="text-sm font-medium">Paseo con Juan Carlos</span>
+                                            <p class="text-xs text-gray-600">15 Nov 2024 • 1 hora</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-green-700 font-medium">Completado</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                                        <div>
+                                            <span class="text-sm font-medium">Cuidado con María Rosa</span>
+                                            <p class="text-xs text-gray-600">16 Nov 2024 • 8 horas</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-blue-700 font-medium">En progreso</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Saved Posts -->
+                        <div class="bg-white rounded-xl card-shadow p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-semibold flex items-center">
+                                    <span class="mr-2">💾</span> Publicaciones Guardadas
+                                </h3>
+                                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">1</span>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                        AR
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-sm">Ana Rodríguez - Cuidadora</h4>
+                                        <p class="text-xs text-gray-600">Especialista en gatos • S/ 60/día</p>
+                                    </div>
+                                    <button onclick="viewSavedPost('Ana Rodríguez')" class="text-amber-600 hover:text-amber-800 text-sm">
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Tab -->
+                <div id="profileTab" class="tab-content p-4">
+                    <div class="text-center mb-6">
+                        <div class="relative inline-block">
+                            <div class="w-24 h-24 bg-amber-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
+                                <span id="profileInitials">AC</span>
+                            </div>
+                            <button onclick="changeProfilePhoto()" class="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-amber-600 hover:bg-amber-50">
+                                📷
+                            </button>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800" id="profileName">Ana Castillo</h2>
+                        <p class="text-gray-600">📍 Miraflores, Lima</p>
+                        <div class="flex items-center justify-center space-x-2 mt-2">
+                            <div class="security-badge text-xs" id="verificationBadge">✓ VERIFICADO</div>
+                            <span class="text-xs text-gray-500">Miembro desde Nov 2024</span>
+                        </div>
+                        <div id="guestWarning" class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg hidden">
+                            <p class="text-xs text-yellow-800">
+                                <strong>👤 Cuenta básica:</strong> Completa tu perfil para contactar paseadores
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Owner Section -->
+                        <div class="bg-white rounded-xl card-shadow p-4">
+                            <h3 class="font-semibold text-amber-800 mb-3 flex items-center">
+                                <span class="mr-2">🐕</span> Sección Dueño
+                                <span class="ml-auto text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full" id="ownerStatus">Activo</span>
+                            </h3>
+                            <div class="space-y-3" id="ownerSection">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium">Mis Mascotas</span>
+                                    <button onclick="showCompleteProfile('owner')" class="text-amber-600 hover:text-amber-800 text-sm">+ Agregar</button>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3" id="petsList">
+                                    <div class="text-center py-4 text-gray-500">
+                                        <div class="text-2xl mb-2">🐕</div>
+                                        <p class="text-sm">No hay mascotas registradas</p>
+                                        <button onclick="showCompleteProfile('owner')" class="text-amber-600 hover:text-amber-800 text-sm mt-2">Registrar mascota</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Walker Section -->
+                        <div class="bg-white rounded-xl card-shadow p-4">
+                            <h3 class="font-semibold text-blue-800 mb-3 flex items-center">
+                                <span class="mr-2">👨‍🦲</span> Sección Paseador
+                                <span class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full" id="walkerStatus">Inactivo</span>
+                            </h3>
+                            <div class="text-center py-4 text-gray-500" id="walkerSection">
+                                <div class="text-3xl mb-2">🚀</div>
+                                <p class="mb-3">¿Quieres ganar dinero cuidando mascotas?</p>
+                                <button onclick="showCompleteProfile('walker')" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Crear Perfil de Paseador
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Settings -->
+                        <div class="bg-white rounded-xl card-shadow p-4">
+                            <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                <span class="mr-2">⚙️</span> Configuración
+                            </h3>
+                            <div class="space-y-3">
+                                <button onclick="editProfile()" class="w-full text-left py-2 text-gray-700 hover:text-amber-600 flex items-center">
+                                    <span class="mr-3">👤</span> Editar perfil
+                                </button>
+                                <button onclick="changePassword()" class="w-full text-left py-2 text-gray-700 hover:text-amber-600 flex items-center">
+                                    <span class="mr-3">🔒</span> Cambiar contraseña
+                                </button>
+                                <button onclick="notificationSettings()" class="w-full text-left py-2 text-gray-700 hover:text-amber-600 flex items-center">
+                                    <span class="mr-3">🔔</span> Notificaciones
+                                    <span class="ml-auto w-2 h-2 bg-red-500 rounded-full"></span>
+                                </button>
+                                <button onclick="privacySettings()" class="w-full text-left py-2 text-gray-700 hover:text-amber-600 flex items-center">
+                                    <span class="mr-3">🛡️</span> Privacidad y seguridad
+                                </button>
+                                <button onclick="helpSupport()" class="w-full text-left py-2 text-gray-700 hover:text-amber-600 flex items-center">
+                                    <span class="mr-3">❓</span> Ayuda y soporte
+                                </button>
+                                <hr class="my-2">
+                                <button onclick="logout()" class="w-full text-left py-2 text-red-600 hover:text-red-800 flex items-center">
+                                    <span class="mr-3">🚪</span> Cerrar sesión
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <!-- Bottom Navigation -->
+            <div class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 shadow-lg">
+                <div class="flex">
+                    <button onclick="showTab('feed')" id="feedBtn" class="flex-1 py-3 text-center tab-btn active">
+                        <div class="text-xl mb-1">🏠</div>
+                        <div class="text-xs font-medium">Inicio</div>
+                    </button>
+                    <button onclick="showTab('chat')" id="chatBtn" class="flex-1 py-3 text-center tab-btn relative">
+                        <div class="text-xl mb-1">💬</div>
+                        <div class="text-xs font-medium">Chat</div>
+                        <div class="absolute top-1 right-3 w-2 h-2 bg-red-500 rounded-full"></div>
+                    </button>
+                    <button onclick="showTab('favorites')" id="favoritesBtn" class="flex-1 py-3 text-center tab-btn">
+                        <div class="text-xl mb-1">⭐</div>
+                        <div class="text-xs font-medium">Favoritos</div>
+                    </button>
+                    <button onclick="showTab('profile')" id="profileBtn" class="flex-1 py-3 text-center tab-btn">
+                        <div class="text-xl mb-1">👤</div>
+                        <div class="text-xs font-medium">Perfil</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="fixed inset-0 bg-white z-50 hidden flex items-center justify-center">
+            <div class="text-center">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <div class="text-4xl mb-4 animate-bounce">🐾</div>
+                <h3 class="text-lg font-semibold text-amber-800 mb-2">Cargando CompaPet...</h3>
+                <p class="text-gray-600">Preparando tu experiencia</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let currentRole = 'owner';
+        let selectedRole = null;
+        let currentSlide = 1;
+        let selectedServiceType = null;
+        let isGuest = false;
+        let captchaVerified = {
+            login: false,
+            register: false,
+            forgot: false
+        };
+        let loginAttempts = 0;
+        const maxLoginAttempts = 3;
+        
+        // Onboarding slide management
+        function nextSlide() {
+            if (currentSlide < 4) {
+                document.getElementById(`slide${currentSlide}`).style.display = 'none';
+                currentSlide++;
+                const nextSlideEl = document.getElementById(`slide${currentSlide}`);
+                nextSlideEl.style.display = 'flex';
+                nextSlideEl.classList.add('slide-in-right');
+                
+                updateProgressDots();
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).style.display = 'none';
+                currentSlide--;
+                const prevSlideEl = document.getElementById(`slide${currentSlide}`);
+                prevSlideEl.style.display = 'flex';
+                prevSlideEl.classList.add('slide-in-left');
+                
+                updateProgressDots();
+            }
+        }
+        
+        function updateProgressDots() {
+            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                if (index + 1 === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+        
+        // Screen management
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+                screen.style.display = 'none';
+            });
+            
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                targetScreen.style.display = 'block';
+            }
+        }
+        
+        // Navigation functions
+        function showOnboarding() {
+            currentSlide = 1;
+            showScreen('onboarding');
+            document.querySelectorAll('.slide').forEach(slide => slide.style.display = 'none');
+            document.getElementById('slide1').style.display = 'flex';
+            updateProgressDots();
+        }
+        
+        function showLogin() {
+            showScreen('login');
+        }
+        
+        function showRegister() {
+            showScreen('register');
+        }
+        
+        function showForgotPassword() {
+            showScreen('forgotPassword');
+        }
+        
+        function continueAsGuest() {
+            isGuest = true;
+            currentUser = {
+                name: 'Usuario Invitado',
+                email: null,
+                isGuest: true,
+                verified: false
+            };
+            showRoleSelection();
+        }
+        
+        function showRoleSelection() {
+            showScreen('roleSelection');
+        }
+        
+        function selectInitialRole(role) {
+            selectedRole = role;
+            currentRole = role;
+            
+            // Visual feedback
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.role-card').classList.add('selected');
+            
+            setTimeout(() => {
+                showMainApp();
+            }, 500);
+        }
+        
+        function showMainApp() {
+            showScreen('mainApp');
+            showTab('feed');
+            updateUserInterface();
+        }
+        
+        function updateUserInterface() {
+            if (isGuest) {
+                document.getElementById('guestWarning').classList.remove('hidden');
+                document.getElementById('verificationBadge').textContent = '👤 INVITADO';
+                document.getElementById('verificationBadge').className = 'bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs';
+                document.getElementById('ownerStatus').textContent = 'Básico';
+                document.getElementById('ownerStatus').className = 'ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full';
+            }
+            
+            if (currentUser) {
+                document.getElementById('profileName').textContent = currentUser.name;
+                const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.getElementById('profileInitials').textContent = initials;
+                document.getElementById('userInitials').textContent = initials;
+            }
+        }
+        
+        // Captcha functionality
+        function solveCaptcha(type) {
+            const captchaEl = document.getElementById(type + 'Captcha');
+            const submitBtn = document.getElementById(type + 'Submit');
+            
+            captchaEl.innerHTML = `
+                <div class="loading-spinner mx-auto mb-2"></div>
+                <p class="text-sm text-gray-600">Verificando...</p>
+            `;
+            
+            setTimeout(() => {
+                captchaEl.classList.add('verified');
+                captchaEl.innerHTML = `
+                    <div class="text-2xl mb-2 text-green-600">✅</div>
+                    <p class="text-sm text-green-700 font-medium">Verificación completada</p>
+                `;
+                captchaVerified[type] = true;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                }
+            }, 2000);
+        }
+        
+        // Password visibility toggle
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+        
+        // Form validation
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function validatePassword(password) {
+            const requirements = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password)
+            };
+            
+            return requirements;
+        }
+        
+        function updatePasswordStrength(password) {
+            const requirements = validatePassword(password);
+            const strengthBars = ['strength1', 'strength2', 'strength3', 'strength4'];
+            const reqElements = ['req1', 'req2', 'req3', 'req4'];
+            const reqTexts = [
+                'Mínimo 8 caracteres',
+                'Una mayúscula',
+                'Una minúscula', 
+                'Un número'
+            ];
+            
+            let strength = 0;
+            Object.values(requirements).forEach(met => {
+                if (met) strength++;
+            });
+            
+            // Update strength bars
+            strengthBars.forEach((barId, index) => {
+                const bar = document.getElementById(barId);
+                bar.className = 'password-strength flex-1 rounded';
+                
+                if (index < strength) {
+                    if (strength === 1) bar.classList.add('bg-red-400');
+                    else if (strength === 2) bar.classList.add('bg-yellow-400');
+                    else if (strength === 3) bar.classList.add('bg-blue-400');
+                    else bar.classList.add('bg-green-400');
+                } else {
+                    bar.classList.add('bg-gray-200');
+                }
+            });
+            
+            // Update requirements
+            Object.entries(requirements).forEach(([key, met], index) => {
+                const reqEl = document.getElementById(reqElements[index]);
+                if (met) {
+                    reqEl.className = 'text-green-500';
+                    reqEl.textContent = '✓ ' + reqTexts[index];
+                } else {
+                    reqEl.className = 'text-red-500';
+                    reqEl.textContent = '✗ ' + reqTexts[index];
+                }
+            });
+            
+            // Update strength text
+            const strengthText = document.getElementById('strengthText');
+            if (strength === 0) strengthText.textContent = 'Muy débil';
+            else if (strength === 1) strengthText.textContent = 'Débil';
+            else if (strength === 2) strengthText.textContent = 'Regular';
+            else if (strength === 3) strengthText.textContent = 'Buena';
+            else strengthText.textContent = 'Muy fuerte';
+            
+            return Object.values(requirements).every(met => met);
+        }
+        
+        // Social login
+        function socialLogin(provider) {
+            showLoadingScreen();
+            
+            setTimeout(() => {
+                hideLoadingScreen();
+                currentUser = { 
+                    name: 'Ana Castillo', 
+                    email: 'ana@email.com',
+                    verified: true,
+                    provider: provider
+                };
+                showRoleSelection();
+            }, 2000);
+        }
+        
+        // Login form handling
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (loginAttempts >= maxLoginAttempts) {
+                alert('Demasiados intentos fallidos. Intenta de nuevo en 15 minutos.');
+                return;
+            }
+            
+            if (!captchaVerified.login) {
+                alert('Por favor completa la verificación captcha');
+                return;
+            }
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (!validateEmail(email)) {
+                document.getElementById('emailError').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('emailError').classList.add('hidden');
+            }
+            
+            if (password.length < 8) {
+                document.getElementById('passwordError').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('passwordError').classList.add('hidden');
+            }
+            
+            if (isValid) {
+                showLoadingScreen();
+                
+                // Simulate login process
+                setTimeout(() => {
+                    hideLoadingScreen();
+                    currentUser = { 
+                        email, 
+                        name: 'Ana Castillo',
+                        token: 'jwt_token_here',
+                        rememberMe,
+                        verified: true
+                    };
+                    showRoleSelection();
+                }, 2000);
+            } else {
+                loginAttempts++;
+            }
+        });
+        
+        // Registration form handling
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!captchaVerified.register) {
+                alert('Por favor completa la verificación captcha');
+                return;
+            }
+            
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const name = document.getElementById('fullName').value;
+            
+            if (!validateEmail(email)) {
+                document.getElementById('registerEmailError').classList.remove('hidden');
+                return;
+            }
+            
+            const passwordValid = Object.values(validatePassword(password)).every(req => req);
+            if (!passwordValid) {
+                alert('La contraseña no cumple todos los requisitos');
+                return;
+            }
+            
+            showLoadingScreen();
+            
+            setTimeout(() => {
+                hideLoadingScreen();
+                document.getElementById('confirmEmail').textContent = email;
+                showScreen('emailConfirmation');
+            }, 2000);
+        });
+        
+        // Forgot password form
+        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!captchaVerified.forgot) {
+                alert('Por favor completa la verificación captcha');
+                return;
+            }
+            
+            const email = document.getElementById('forgotEmail').value;
+            
+            if (validateEmail(email)) {
+                showLoadingScreen();
+                
+                setTimeout(() => {
+                    hideLoadingScreen();
+                    alert(`Enlace de recuperación enviado a ${email}. El enlace expirará en 15 minutos.`);
+                    showLogin();
+                }, 2000);
+            } else {
+                alert('Por favor ingresa un correo válido');
+            }
+        });
+        
+        // Email confirmation functions
+        function checkEmailConfirmation() {
+            showLoadingScreen();
+            
+            setTimeout(() => {
+                hideLoadingScreen();
+                currentUser = { 
+                    name: document.getElementById('fullName').value || 'Ana Castillo',
+                    email: document.getElementById('confirmEmail').textContent,
+                    verified: true
+                };
+                showRoleSelection();
+            }, 1500);
+        }
+        
+        function resendConfirmation() {
+            alert('Correo de confirmación reenviado. Revisa tu bandeja de entrada.');
+        }
+        
+        // Complete profile functionality
+        function showCompleteProfile(type) {
+            if (isGuest) {
+                if (confirm('Para completar tu perfil necesitas crear una cuenta. ¿Quieres registrarte ahora?')) {
+                    showRegister();
+                }
+                return;
+            }
+            
+            document.getElementById('completeProfileModal').classList.remove('hidden');
+            
+            // Show appropriate form
+            document.getElementById('ownerProfileForm').classList.add('hidden');
+            document.getElementById('walkerProfileForm').classList.add('hidden');
+            
+            if (type === 'owner') {
+                document.getElementById('ownerProfileForm').classList.remove('hidden');
+            } else {
+                document.getElementById('walkerProfileForm').classList.remove('hidden');
+            }
+        }
+        
+        function closeCompleteProfile() {
+            document.getElementById('completeProfileModal').classList.add('hidden');
+        }
+        
+        function saveProfile() {
+            // Get form data
+            const formType = document.getElementById('ownerProfileForm').classList.contains('hidden') ? 'walker' : 'owner';
+            
+            if (formType === 'owner') {
+                // Save owner profile data
+                const petName = document.querySelector('#ownerProfileForm input[placeholder*="Nombre"]')?.value || 'Max';
+                const petType = document.querySelector('#ownerProfileForm select')?.value || '🐕 Perro';
+                
+                // Update pets list
+                const petsList = document.getElementById('petsList');
+                petsList.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="text-2xl">🐕</div>
+                        <div>
+                            <p class="font-medium">${petName}</p>
+                            <p class="text-sm text-gray-600">${petType} • 3 años</p>
+                        </div>
+                        <button onclick="selectPet('${petName}')" class="ml-auto text-amber-600 hover:text-amber-800">Seleccionar</button>
+                    </div>
+                `;
+                
+                // Update owner status
+                document.getElementById('ownerStatus').textContent = 'Completo';
+                document.getElementById('ownerStatus').className = 'ml-auto text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full';
+                
+            } else {
+                // Save walker profile data
+                const walkerSection = document.getElementById('walkerSection');
+                walkerSection.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium">Servicios ofrecidos</span>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Activo</span>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <div class="text-center py-2 text-gray-500">
+                                <div class="text-2xl mb-2">🚶‍♂️</div>
+                                <p class="text-sm">Perfil de paseador completado</p>
+                                <p class="text-xs text-gray-400 mt-1">Ahora puedes recibir solicitudes</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Update walker status
+                document.getElementById('walkerStatus').textContent = 'Activo';
+                document.getElementById('walkerStatus').className = 'ml-auto text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full';
+            }
+            
+            alert('Perfil guardado exitosamente. Ahora puedes contactar paseadores y cuidadores.');
+            closeCompleteProfile();
+            
+            // Update UI to show completed profile
+            if (!isGuest) {
+                document.getElementById('guestWarning').classList.add('hidden');
+            }
+        }
+        
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+                tab.style.display = 'none';
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-amber-600');
+                btn.classList.add('text-gray-600');
+            });
+            
+            // Show selected tab
+            const targetTab = document.getElementById(tabName + 'Tab');
+            if (targetTab) {
+                targetTab.classList.add('active');
+                targetTab.style.display = 'block';
+            }
+            
+            // Activate corresponding button
+            const targetBtn = document.getElementById(tabName + 'Btn');
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'text-amber-600');
+                targetBtn.classList.remove('text-gray-600');
+            }
+        }
+        
+        // Feed filtering
+        function filterFeed(type) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('border-b-2', 'border-amber-600', 'text-amber-600');
+                btn.classList.add('text-gray-600');
+            });
+            
+            event.target.classList.add('border-b-2', 'border-amber-600', 'text-amber-600');
+            event.target.classList.remove('text-gray-600');
+            
+            // Filter posts based on type
+            const posts = document.querySelectorAll('.post-card');
+            
+            posts.forEach(post => {
+                let shouldShow = false;
+                
+                switch(type) {
+                    case 'all':
+                        shouldShow = true;
+                        break;
+                    case 'walkers':
+                        shouldShow = post.dataset.role === 'walker';
+                        break;
+                    case 'caregivers':
+                        shouldShow = post.dataset.role === 'caregiver';
+                        break;
+                    case 'nearby':
+                        // Show posts within 1.5km
+                        const locationText = post.querySelector('.text-gray-600').textContent;
+                        shouldShow = locationText.includes('San Isidro') || locationText.includes('Miraflores');
+                        break;
+                }
+                
+                if (shouldShow) {
+                    post.style.display = 'block';
+                    post.classList.add('fade-in');
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        }
+        
+        // Role switching
+       function switchRole(role) {
+            currentRole = role;
+
+            // Reset botones
+            document.getElementById('ownerToggle').classList.remove('active', 'bg-blue-500', 'text-white');
+            document.getElementById('walkerToggle').classList.remove('active', 'bg-green-500', 'text-white');
+            document.getElementById('allToggle').classList.remove('active', 'bg-purple-500', 'text-white');
+
+            document.getElementById('ownerToggle').classList.add('bg-blue-200', 'text-blue-800');
+            document.getElementById('walkerToggle').classList.add('bg-green-200', 'text-green-800');
+            document.getElementById('allToggle').classList.add('bg-purple-200', 'text-purple-800');
+
+            // Ocultar todos los posts
+            document.querySelectorAll(".post-card").forEach(post => post.classList.add("hidden"));
+
+            if (role === 'owner') {
+                // Soy dueño -> veo paseadores y cuidadores
+                document.getElementById('ownerToggle').classList.add('active', 'bg-blue-500', 'text-white');
+                document.getElementById('ownerToggle').classList.remove('bg-blue-200', 'text-blue-800');
+
+                document.querySelectorAll('.post-card[data-role="walker"], .post-card[data-role="caregiver"]').forEach(post => {
+                    post.classList.remove("hidden");
+                });
+
+                document.getElementById('roleInfo').innerHTML = `
+                    <div class="flex items-start space-x-2">
+                        <div class="text-amber-600 mt-1">ℹ️</div>
+                        <p class="text-sm text-amber-800">Como <strong>Dueño</strong>, puedes buscar paseadores y cuidadores para tus mascotas, ver sus perfiles y solicitar servicios.</p>
+                    </div>
+                `;
+            } else if (role === 'walker') {
+                    // Soy paseador -> veo dueños
+                document.getElementById('walkerToggle').classList.add('active', 'bg-green-500', 'text-white');
+                document.getElementById('walkerToggle').classList.remove('bg-green-200', 'text-green-800');
+
+                document.querySelectorAll('.post-card[data-role="owner"]').forEach(post => {
+                    post.classList.remove("hidden");
+                    // Mostrar botones "me ofrezco" en posts de dueños
+                    post.querySelectorAll(".walker-only").forEach(btn => btn.classList.remove("hidden"));
+                });
+
+                document.getElementById('roleInfo').innerHTML = `
+                    <div class="flex items-start space-x-2">
+                        <div class="text-blue-600 mt-1">ℹ️</div>
+                        <p class="text-sm text-blue-800">Como <strong>Paseador</strong>, puedes ver solicitudes de dueños cercanos y ofrecer tus servicios profesionales.</p>
+                    </div>
+                `;
+            } else if (role === 'all') {
+                // Ver todos
+                document.getElementById('allToggle').classList.add('active', 'bg-purple-500', 'text-white');
+                document.getElementById('allToggle').classList.remove('bg-purple-200', 'text-purple-800');
+
+                document.querySelectorAll(".post-card").forEach(post => post.classList.remove("hidden"));
+
+                document.getElementById('roleInfo').innerHTML = `
+                    <div class="flex items-start space-x-2">
+                        <div class="text-purple-600 mt-1">ℹ️</div>
+                        <p class="text-sm text-purple-800">Viendo <strong>TODOS</strong> los perfiles disponibles en la plataforma.</p>
+                    </div>
+                `;
+            }
+
+           
+
+   
+
+        }
+
+
+        
+        // Service requests
+        function requestService(providerName) {
+            if (isGuest) {
+                if (confirm('Para solicitar servicios necesitas completar tu perfil. ¿Quieres hacerlo ahora?')) {
+                    showCompleteProfile('owner');
+                }
+                return;
+            }
+            
+            alert(`Solicitando servicio de ${providerName}. Se abriría un formulario detallado para especificar fecha, hora, duración y necesidades especiales.`);
+        }
+        
+        function offerService(ownerName) {
+            if (isGuest) {
+                if (confirm('Para ofrecer servicios necesitas crear un perfil de paseador. ¿Quieres hacerlo ahora?')) {
+                    showCompleteProfile('walker');
+                }
+                return;
+            }
+            
+            alert(`Ofreciendo servicios a ${ownerName}. Se abriría un formulario para proponer horarios y precios.`);
+        }
+        
+        // Loading screen
+        function showLoadingScreen() {
+            document.getElementById('loadingScreen').classList.remove('hidden');
+        }
+        
+        function hideLoadingScreen() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+        }
+        
+        // Utility functions
+        function showTerms() {
+            alert('Términos y condiciones: Documento completo con reglas de uso, responsabilidades, limitaciones de responsabilidad, etc.');
+        }
+        
+        function showPrivacy() {
+            alert('Política de privacidad: Información sobre recolección de datos, uso, compartición, derechos del usuario, etc.');
+        }
+        
+        function selectProfilePhoto() {
+            alert('Funcionalidad para seleccionar foto de perfil desde galería o cámara.');
+        }
+        
+        function viewProfile(providerName) {
+            alert(`Viendo perfil completo de ${providerName}. Se mostraría información detallada, reseñas, certificaciones y galería de fotos.`);
+        }
+        
+        function viewSchedule(providerName) {
+            alert(`Viendo horario de ${providerName}. Se mostraría un calendario interactivo con disponibilidad en tiempo real.`);
+        }
+        
+        function sharePost(userName) {
+            alert(`Compartiendo publicación de ${userName} con otros paseadores de la comunidad.`);
+        }
+        
+        function openChat(contactName) {
+            if (isGuest) {
+                alert('Tiene que crearse una cuenta para usar el chat');
+                return;
+            }
+            
+            alert(`Abriendo chat con ${contactName}. Se mostraría la interfaz de mensajería completa.`);
+        }
+        
+        // Chat role switching
+        function switchChatRole(role) {
+            // Update toggle buttons
+            document.getElementById('chatOwnerToggle').classList.remove('active', 'bg-blue-500', 'text-white');
+            document.getElementById('chatWalkerToggle').classList.remove('active', 'bg-green-500', 'text-white');
+            
+            // Reset button styles
+            document.getElementById('chatOwnerToggle').classList.add('bg-blue-200', 'text-blue-800');
+            document.getElementById('chatWalkerToggle').classList.add('bg-green-200', 'text-green-800');
+            
+            // Show/hide chat content
+            document.getElementById('ownerChatContent').classList.add('hidden');
+            document.getElementById('walkerChatContent').classList.add('hidden');
+            
+            if (role === 'owner') {
+                document.getElementById('chatOwnerToggle').classList.add('active', 'bg-blue-500', 'text-white');
+                document.getElementById('chatOwnerToggle').classList.remove('bg-blue-200', 'text-blue-800');
+                document.getElementById('ownerChatContent').classList.remove('hidden');
+            } else {
+                document.getElementById('chatWalkerToggle').classList.add('active', 'bg-green-500', 'text-white');
+                document.getElementById('chatWalkerToggle').classList.remove('bg-green-200', 'text-green-800');
+                document.getElementById('walkerChatContent').classList.remove('hidden');
+            }
+        }
+        
+        function newChat() {
+            alert('Iniciar nueva conversación. Se mostraría lista de contactos disponibles o búsqueda de usuarios.');
+        }
+        
+        function quickHire(providerName) {
+            alert(`Contratando rápidamente a ${providerName} con la configuración anterior.`);
+        }
+        
+        function viewSavedPost(providerName) {
+            alert(`Viendo publicación guardada de ${providerName}.`);
+        }
+        
+        function viewFullHistory() {
+            alert('Mostrando historial completo de servicios con filtros por fecha, tipo y calificación.');
+        }
+        
+        function changeProfilePhoto() {
+            alert('Funcionalidad para cambiar foto de perfil.');
+        }
+        
+        function selectPet(petName) {
+            alert(`${petName} seleccionado como mascota activa para solicitar servicios.`);
+        }
+        
+        function editProfile() {
+            alert('Editando perfil personal: nombre, foto, ubicación, descripción, preferencias de contacto.');
+        }
+        
+        function changePassword() {
+            alert('Formulario seguro para cambiar contraseña con validación de contraseña actual y confirmación de nueva contraseña.');
+        }
+        
+        function notificationSettings() {
+            alert('Configuración de notificaciones: push, email, SMS, horarios de no molestar, tipos de alertas.');
+        }
+        
+        function privacySettings() {
+            alert('Configuración de privacidad: visibilidad del perfil, compartir ubicación, datos de mascotas, historial de servicios.');
+        }
+        
+        function helpSupport() {
+            alert('Centro de ayuda con FAQ, chat de soporte, reportar problemas, guías de uso y contacto directo.');
+        }
+        
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                currentUser = null;
+                selectedRole = null;
+                currentRole = 'owner';
+                isGuest = false;
+                showOnboarding();
+            }
+        }
+        
+        function showSearch() {
+            alert('Búsqueda avanzada con filtros: ubicación, tipo de servicio, precio, calificación, disponibilidad, especialidades.');
+        }
+        
+        function showNotifications() {
+            alert('Centro de notificaciones: nuevos mensajes, solicitudes de servicio, confirmaciones, recordatorios, actualizaciones de seguimiento.');
+        }
+        
+        function expandSearchRadius() {
+            alert('Ampliando radio de búsqueda para encontrar más solicitudes de servicios en áreas cercanas.');
+        }
+        
+         // Express search
+        function showExpressSearch() {
+            document.getElementById('expressModal').classList.remove('hidden');
+        }
+        
+        function closeExpressModal() {
+            document.getElementById('expressModal').classList.add('hidden');
+        }
+        
+        function startExpressSearch(serviceType) {
+            closeExpressModal();
+            // Simulate search
+            setTimeout(() => {
+                document.getElementById('matchModal').classList.remove('hidden');
+            }, 1500);
+        }
+        
+        function acceptMatch() {
+            document.getElementById('matchModal').classList.add('hidden');
+            showTrackingModal();
+        }
+        
+        function rejectMatch() {
+            document.getElementById('matchModal').classList.add('hidden');
+            // Could show another match or return to search
+            setTimeout(() => {
+                document.getElementById('matchModal').classList.remove('hidden');
+            }, 2000);
+        }
+        
+        // Real-time input validation
+        document.getElementById('loginEmail')?.addEventListener('input', function(e) {
+            const email = e.target.value;
+            const errorDiv = document.getElementById('emailError');
+            
+            if (email && !validateEmail(email)) {
+                errorDiv.classList.remove('hidden');
+            } else {
+                errorDiv.classList.add('hidden');
+            }
+        });
+        
+        document.getElementById('registerEmail')?.addEventListener('input', function(e) {
+            const email = e.target.value;
+            const errorDiv = document.getElementById('registerEmailError');
+            
+            if (email && !validateEmail(email)) {
+                errorDiv.classList.remove('hidden');
+            } else {
+                errorDiv.classList.add('hidden');
+            }
+        });
+        
+        document.getElementById('registerPassword')?.addEventListener('input', function(e) {
+            updatePasswordStrength(e.target.value);
+        });
+        
+        // Chat functionality
+        let currentChatUser = null;
+        
+        function openChatWindow(contactName, role) {
+            if (isGuest) {
+                if (confirm('Para chatear necesitas completar tu perfil. ¿Quieres hacerlo ahora?')) {
+                    showCompleteProfile('owner');
+                }
+                return;
+            }
+            
+            currentChatUser = contactName;
+            document.getElementById('chatName').textContent = contactName;
+            document.getElementById('chatWindow').classList.remove('hidden');
+            
+            // Update avatar based on contact
+            const avatar = document.getElementById('chatAvatar');
+            const initials = contactName.split(' ').map(n => n[0]).join('');
+            avatar.textContent = initials;
+            
+            // Set avatar color based on role
+            if (role === 'walker') {
+                avatar.className = 'w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold';
+            } else if (role === 'caregiver') {
+                avatar.className = 'w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-semibold';
+            } else {
+                avatar.className = 'w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold';
+            }
+        }
+        
+        function closeChatWindow() {
+            document.getElementById('chatWindow').classList.add('hidden');
+            currentChatUser = null;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                const messagesContainer = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'flex justify-end';
+                messageDiv.innerHTML = `
+                    <div class="chat-bubble bg-amber-600 text-white rounded-lg p-3">
+                        <p class="text-sm">${message}</p>
+                        <span class="text-xs text-amber-200 mt-1 block">Tú • Ahora</span>
+                    </div>
+                `;
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                input.value = '';
+                
+                // Simulate response after 2 seconds
+                setTimeout(() => {
+                    const responseDiv = document.createElement('div');
+                    responseDiv.className = 'flex justify-start';
+                    responseDiv.innerHTML = `
+                        <div class="chat-bubble bg-gray-100 rounded-lg p-3">
+                            <p class="text-sm">¡Perfecto! Te confirmo los detalles por aquí 👍</p>
+                            <span class="text-xs text-gray-500 mt-1 block">${currentChatUser} • Ahora</span>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(responseDiv);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 2000);
+            }
+        }
+        
+        function showEmojiPicker() {
+            const picker = document.getElementById('emojiPicker');
+            picker.classList.toggle('hidden');
+        }
+        
+        function addEmoji(emoji) {
+            const input = document.getElementById('chatInput');
+            input.value += emoji;
+            document.getElementById('emojiPicker').classList.add('hidden');
+        }
+        
+        function attachPhoto() {
+            alert('Funcionalidad para adjuntar fotos (limitada). Se abriría selector de archivos con restricciones de tamaño y tipo.');
+        }
+        
+        function viewProfileFromChat(name) {
+            if (name) {
+                alert(`Viendo perfil de ${name} desde el chat. Vista previa rápida con información básica y botón para ver perfil completo.`);
+            } else if (currentChatUser) {
+                alert(`Viendo perfil de ${currentChatUser} desde el chat.`);
+            }
+        }
+        
+        // Chat role switching
+        function switchChatRole(role) {
+            // Update toggle buttons
+            document.getElementById('chatOwnerToggle').classList.remove('active');
+            document.getElementById('chatWalkerToggle').classList.remove('active');
+            
+            // Show/hide role views
+            document.getElementById('chatOwnerView').classList.add('hidden');
+            document.getElementById('chatWalkerView').classList.add('hidden');
+            
+            if (role === 'owner') {
+                document.getElementById('chatOwnerToggle').classList.add('active');
+                document.getElementById('chatOwnerView').classList.remove('hidden');
+            } else {
+                document.getElementById('chatWalkerToggle').classList.add('active');
+                document.getElementById('chatWalkerView').classList.remove('hidden');
+            }
+        }
+        
+        // Filter functions for chat views
+        function filterOwnerPosts(type) {
+            document.querySelectorAll('.owner-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-600', 'border');
+            });
+            
+            event.target.classList.add('bg-amber-600', 'text-white');
+            event.target.classList.remove('bg-white', 'text-gray-600', 'border');
+            
+            const posts = document.querySelectorAll('.owner-post');
+            posts.forEach(post => {
+                let shouldShow = false;
+                
+                switch(type) {
+                    case 'all':
+                        shouldShow = true;
+                        break;
+                    case 'walkers':
+                        shouldShow = post.dataset.type === 'walker';
+                        break;
+                    case 'caregivers':
+                        shouldShow = post.dataset.type === 'caregiver';
+                        break;
+                    case 'available':
+                        shouldShow = post.querySelector('.text-green-800');
+                        break;
+                }
+                
+                post.style.display = shouldShow ? 'block' : 'none';
+            });
+        }
+        
+        function filterWalkerRequests(type) {
+            document.querySelectorAll('.walker-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-600', 'border');
+            });
+            
+            event.target.classList.add('bg-blue-600', 'text-white');
+            event.target.classList.remove('bg-white', 'text-gray-600', 'border');
+            
+            const requests = document.querySelectorAll('.walker-request');
+            requests.forEach(request => {
+                let shouldShow = false;
+                
+                switch(type) {
+                    case 'all':
+                        shouldShow = true;
+                        break;
+                    case 'small':
+                        shouldShow = request.dataset.size === 'small';
+                        break;
+                    case 'medium':
+                        shouldShow = request.dataset.size === 'medium';
+                        break;
+                    case 'large':
+                        shouldShow = request.dataset.size === 'large';
+                        break;
+                    case 'urgent':
+                        shouldShow = request.dataset.urgent === 'true';
+                        break;
+                }
+                
+                request.style.display = shouldShow ? 'block' : 'none';
+            });
+        }
+        
+        function quickContact(providerName) {
+            if (isGuest) {
+                if (confirm('Para contactar necesitas completar tu perfil. ¿Quieres hacerlo ahora?')) {
+                    showCompleteProfile('owner');
+                }
+                return;
+            }
+            
+            openChatWindow(providerName, 'walker');
+        }
+        
+        function respondToRequest(ownerName) {
+            if (isGuest) {
+                if (confirm('Para responder necesitas crear un perfil de paseador. ¿Quieres hacerlo ahora?')) {
+                    showCompleteProfile('walker');
+                }
+                return;
+            }
+            
+            openChatWindow(ownerName, 'owner');
+        }
+        
+        // Favorites functionality
+        function showFavoritesSubTab(tabName) {
+            // Update sub-tab buttons
+            document.querySelectorAll('[id$="SubBtn"]').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-amber-600', 'shadow-sm');
+                btn.classList.add('text-gray-600');
+            });
+            
+            // Hide all sub-tabs
+            document.querySelectorAll('.favorites-subtab').forEach(tab => {
+                tab.classList.add('hidden');
+                tab.classList.remove('active');
+            });
+            
+            // Show selected sub-tab
+            const targetBtn = document.getElementById(tabName + 'SubBtn');
+            const targetTab = document.getElementById(tabName + 'SubTab');
+            
+            if (targetBtn && targetTab) {
+                targetBtn.classList.add('bg-white', 'text-amber-600', 'shadow-sm');
+                targetBtn.classList.remove('text-gray-600');
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('active');
+            }
+        }
+        
+        function filterHistory(status) {
+            document.querySelectorAll('.history-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-600', 'border');
+            });
+            
+            event.target.classList.add('bg-amber-600', 'text-white');
+            event.target.classList.remove('bg-white', 'text-gray-600', 'border');
+            
+            const items = document.querySelectorAll('.history-item');
+            items.forEach(item => {
+                const shouldShow = status === 'all' || item.dataset.status === status;
+                item.style.display = shouldShow ? 'block' : 'none';
+            });
+        }
+        
+        function rehireService(providerName, serviceType) {
+            if (confirm(`¿Quieres contratar nuevamente a ${providerName} para un ${serviceType}?`)) {
+                alert(`Recontratando a ${providerName}. Se abriría el formulario de solicitud con los datos del servicio anterior prellenados.`);
+            }
+        }
+        
+        function viewServiceDetails(serviceId) {
+            alert(`Viendo detalles del servicio ${serviceId}. Se mostraría información completa: fotos, ubicación GPS, duración real, calificaciones, etc.`);
+        }
+        
+        function trackService(serviceId) {
+            alert(`Siguiendo servicio ${serviceId} en tiempo real. Se abriría mapa con ubicación GPS del paseador y actualizaciones en vivo.`);
+        }
+        
+        function contactProvider(providerName) {
+            openChatWindow(providerName, 'walker');
+        }
+        
+        function confirmService(serviceId) {
+            if (confirm('¿Confirmas este servicio? Se enviará notificación al paseador.')) {
+                alert(`Servicio ${serviceId} confirmado. El paseador ha sido notificado.`);
+            }
+        }
+        
+        function cancelService(serviceId) {
+            if (confirm('¿Estás seguro de cancelar este servicio? Puede aplicar una penalización.')) {
+                alert(`Servicio ${serviceId} cancelado. Se procesará el reembolso según las políticas.`);
+            }
+        }
+        
+        function findAlternative(serviceId) {
+            alert(`Buscando paseadores alternativos para reemplazar el servicio cancelado ${serviceId}.`);
+        }
+        
+        function loadMoreHistory() {
+            alert('Cargando más servicios del historial...');
+        }
+        
+        function exportHistory() {
+            alert('Exportando historial de servicios a PDF/Excel para tus registros.');
+        }
+        
+        function removeFavorite(providerName) {
+            if (confirm(`¿Quitar a ${providerName} de favoritos?`)) {
+                alert(`${providerName} removido de favoritos.`);
+            }
+        }
+        
+        function scheduleService(providerName) {
+            alert(`Programando servicio futuro con ${providerName}. Se abriría calendario para seleccionar fecha y hora.`);
+        }
+        
+        function unsavePost(providerName) {
+            if (confirm(`¿Quitar publicación de ${providerName} de guardados?`)) {
+                alert(`Publicación de ${providerName} removida de guardados.`);
+            }
+        }
+        
+        function clearAllSaved() {
+            if (confirm('¿Estás seguro de limpiar todas las publicaciones guardadas?')) {
+                alert('Todas las publicaciones guardadas han sido eliminadas.');
+            }
+        }
+        
+        // Profile functionality
+        function toggleOwnerRole() {
+            const toggle = document.getElementById('ownerToggleSwitch');
+            const status = document.getElementById('ownerStatus');
+            
+            if (toggle.checked) {
+                status.textContent = 'Activo';
+                status.className = 'text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full';
+            } else {
+                status.textContent = 'Inactivo';
+                status.className = 'text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full';
+            }
+        }
+        
+        function toggleWalkerRole() {
+            const toggle = document.getElementById('walkerToggleSwitch');
+            const status = document.getElementById('walkerStatus');
+            const inactiveState = document.getElementById('walkerInactiveState');
+            const activeState = document.getElementById('walkerActiveState');
+            
+            if (toggle.checked) {
+                if (confirm('Para activar el rol de paseador necesitas completar tu perfil profesional. ¿Quieres hacerlo ahora?')) {
+                    showCompleteProfile('walker');
+                    status.textContent = 'Activo';
+                    status.className = 'text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full';
+                    inactiveState.classList.add('hidden');
+                    activeState.classList.remove('hidden');
+                } else {
+                    toggle.checked = false;
+                }
+            } else {
+                status.textContent = 'Inactivo';
+                status.className = 'text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full';
+                inactiveState.classList.remove('hidden');
+                activeState.classList.add('hidden');
+            }
+        }
+        
+        function editPet(petName) {
+            alert(`Editando información de ${petName}. Se abriría formulario con datos actuales para modificar.`);
+        }
+        
+        function editSocialLinks() {
+            alert('Editando enlaces de redes sociales. Se abriría formulario para agregar/modificar Instagram, Facebook, WhatsApp, etc.');
+        }
+        
+        function setup2FA() {
+            alert('Configurando autenticación de dos factores. Se mostraría opciones: SMS, email, app autenticadora.');
+        }
+        
+        // Allow Enter key to send messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+        
+        // New service functions
+        function viewOwnerProfile(ownerName) {
+            alert(`Viendo perfil completo de ${ownerName}. Se mostraría información de mascotas, historial de servicios, calificaciones y reseñas de otros paseadores.`);
+        }
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            showOnboarding();
+        });
+        
+        // Add CSS for active states
+        const style = document.createElement('style');
+        style.textContent = `
+            .screen {
+                display: none;
+            }
+            
+            .screen.active {
+                display: block;
+            }
+            
+            .tab-content {
+                display: none;
+            }
+            
+            .tab-content.active {
+                display: block;
+            }
+            
+            .tab-btn.active {
+                color: #D97706;
+                font-weight: 600;
+            }
+            
+            .tab-btn {
+                color: #6B7280;
+                transition: all 0.2s ease;
+            }
+            
+            .tab-btn:hover {
+                color: #D97706;
+            }
+            
+            .slide {
+                display: none;
+            }
+            
+            .slide.active {
+                display: flex;
+            }
+        `;
+        document.head.appendChild(style);
+
+    </script>
+
+        <script>
+        function skipOnboarding() {
+            // Oculta todos los slides
+            document.querySelectorAll(".slide").forEach(slide => slide.style.display = "none");
+            // Muestra directamente el último slide
+            document.getElementById("slide4").style.display = "flex";
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98162867248ac2d8',t:'MTc1ODI1NDIzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
